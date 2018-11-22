@@ -1,0 +1,22 @@
+---
+title: "Monte Carlo Simulation of Stock Portfolio in R, Matlab, and Python"
+author: "Feichen Shen, Israel Diego, Shuoran Li"
+date: `r format.Date(Sys.Date(), '%B %d, %Y')`"
+output: 
+  html_document:
+    theme: journal
+    highlight: pygments
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Monte Carlo Introduction
+
+Description and Formulas Here
+
+## Dataset Summary
+
+Apple, Google, and Facebook adjusted close Prices from November 14th, 2017 - 
+November 14th, 2018. Data comes from Yahoo Finance.
