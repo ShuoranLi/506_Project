@@ -20,6 +20,8 @@ rng('default');
 rng(1);
 
 % Load Stock Price Data
+mc_rep = 1000;
+
 stockData = readtable('Group21_ProjectData.csv');
 
 stockPrices = table2array(stockData(:, 2:end));
@@ -28,7 +30,13 @@ stockReturns = returns(stockPrices);
 
 % Get the Variance Covariance Matrix of our Stock Returns
 coVarMat = cov(stockReturns);
+mu = transpose(mean(stockReturns));
+mu = repmat(mu, 1, mc_rep);
+Z = randn(size(stockReturns,2), mc_rep);
 
+L = chol(coVarMat, 'lower');
+
+simulatedReturns = mu + L * Z;
 
 % This function returns the first differences of a t x q matrix of data
 function [yDif] = returns(y)
