@@ -61,7 +61,8 @@ for i = 1:mc_rep
     portfolio30DayReturn_m(:,i) = thirtyDayReturn;
 end
 
-plot(portfolio30DayReturn_m - 1, 'LineWidth',0.5, 'Color',[0,0.7,0.9, 0.2])
+plot(portfolio30DayReturn_m - 1, 'LineWidth',0.5, 'Color',[0,0.7,0.9, 0.2], 
+zeros())
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Calculate some statistics for our simulated portfolio returns
 averagePortfolioReturns = mean(portfolio30DayReturn_m);
