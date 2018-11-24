@@ -44,19 +44,22 @@ mu = repmat(mu, 1, mc_rep);
 % Randomly generated numbers from N(0,1) distribution 
 Z = randn(size(stockReturns,2), mc_rep);
 
-% Lower Triangular Matrix from our Choleski Factorization
+% Lower Triangular Matrix from Choleski Factorization
 L = chol(coVarMat, 'lower');
 
 % Calculate our portfolio returns for each monte carlo simulation
-simulatedReturns = mu + L * Z;
+simulatedReturns = mu + (L * Z);
 
 % Portfolio Returns
 portfolioReturns = initInvestment * (portfolioWeights * simulatedReturns + 1);
+
+% FIXME: LET'S DO A MULTIPERIOD RETURN (30 DAYS)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Calculate some statistics for our simulated portfolio returns
 averagePortfolioReturns = mean(portfolioWeights * simulatedReturns);
 stdDevPortfolioReturns = std(portfolioWeights * simulatedReturns);
+medianPortfolioReturns = median(portfolioWeights * simulatedReturns);
 
 % This function returns the first differences of a t x q matrix of data
 function [yDif] = returns(y)
