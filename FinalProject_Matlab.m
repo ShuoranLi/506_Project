@@ -21,6 +21,7 @@ rng(1);
 
 mc_rep = 1000; % Number of Monte Carlo Simulations
 initInvestment = 100000; % $100,000 Initial Investment Portfolio at t = 0
+numTradingDays = 30; % 
 
 % Load Stock Price Data
 stockData = readtable('Group21_ProjectData.csv');
@@ -39,27 +40,33 @@ coVarMat = cov(stockReturns);
 
 % Average returns of each asset 
 mu = transpose(mean(stockReturns));
-mu = repmat(mu, 1, mc_rep);
+mu = repmat(mu, 1, numTradingDays);
 
-% Randomly generated numbers from N(0,1) distribution 
-Z = randn(size(stockReturns,2), mc_rep);
+% Initializing our simulated 30 day returns
+portfolio30DayReturn_m = zeros(numTradingDays, mc_rep);
+for i = 1:mc_rep
+    % Randomly generated numbers from N(0,1) distribution 
+    Z = randn(size(stockReturns,2), numTradingDays);
 
-% Lower Triangular Matrix from Choleski Factorization
-L = chol(coVarMat, 'lower');
+    % Lower Triangular Matrix from Choleski Factorization
+    L = chol(coVarMat, 'lower');
 
-% Calculate our portfolio returns for each monte carlo simulation
-simulatedReturns = mu + (L * Z);
+    % Calculate daily returns for 30 days
+    dailyReturns = mu + (L * Z);
 
-% Portfolio Returns
-portfolioReturns = initInvestment * (portfolioWeights * simulatedReturns + 1);
+    % Portfolio Returns
+    thirtyDayReturn = transpose(cumprod(portfolioWeights * dailyReturns + 1));
+    
+    % Add return to the set of all 30-day portfolio returns
+    portfolio30DayReturn_m(:,i) = thirtyDayReturn;
+end
 
-% FIXME: LET'S DO A MULTIPERIOD RETURN (30 DAYS)
-
+plot(portfolio30DayReturn_m - 1)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Calculate some statistics for our simulated portfolio returns
-averagePortfolioReturns = mean(portfolioWeights * simulatedReturns);
-stdDevPortfolioReturns = std(portfolioWeights * simulatedReturns);
-medianPortfolioReturns = median(portfolioWeights * simulatedReturns);
+averagePortfolioReturns = mean(portfolio30DayReturn_m);
+stdDevPortfolioReturns = std(portfolio30DayReturn_m);
+medianPortfolioReturns = median(portfolio30DayReturn_m);
 
 % This function returns the first differences of a t x q matrix of data
 function [yDif] = returns(y)
