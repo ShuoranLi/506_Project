@@ -67,11 +67,13 @@ ggplot(data = plot_data, aes(x = x_axis, y = y_axis)) + geom_path(aes(col = 'red
   ggtitle('Simulated Portfolio Returns in 30 days')
 
 
-# Porfolio Returns
+# Porfolio Returns statistics at the 30th day.
 
-Avg_Portfolio_Returns = colMeans(portfolio_Returns_30_m)
-SD_Portfolio_Returns = apply(portfolio_Returns_30_m, 2, sd)
-Median_Portfolio_Returns = apply(portfolio_Returns_30_m, 2, median)
+Avg_Portfolio_Returns = mean(portfolio_Returns_30_m[30,]-1)
+SD_Portfolio_Returns = sd(portfolio_Returns_30_m[30,]-1)
+Median_Portfolio_Returns = median(portfolio_Returns_30_m[30,]-1)
+# Construct a 95% Confidential Interval for average returns
+Avg_CI = quantile(portfolio_Returns_30_m[30,]-1, c(0.025, 0.975))
 
 
 
