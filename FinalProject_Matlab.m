@@ -64,9 +64,9 @@ end
 plot(portfolio30DayReturn_m - 1, 'LineWidth',0.5, 'Color',[0,0.7,0.9, 0.2])
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Calculate some statistics for our simulated portfolio returns
-averagePortfolioReturns = mean(portfolio30DayReturn_m);
-stdDevPortfolioReturns = std(portfolio30DayReturn_m);
-medianPortfolioReturns = median(portfolio30DayReturn_m);
+averagePortfolioReturns = mean(portfolio30DayReturn_m(end,:) - 1);
+stdDevPortfolioReturns = std(portfolio30DayReturn_m(end,:) - 1);
+medianPortfolioReturns = median(portfolio30DayReturn_m(end,:) - 1);
 
 % This function returns the first differences of a t x q matrix of data
 function [yDif] = returns(y)
