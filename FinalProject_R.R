@@ -18,7 +18,6 @@ stock_Data = fread('./Group21_ProjectData.csv')
 stock_Price = as.matrix( stock_Data[ , 2:4] )
 
 mc_rep = 1000 # Number of Monte Carlo Simulations
-init_Investment = 100000 # $100,000 Initial Investment Portfolio at t = 0
 training_days = 30 
 
 # This function returns the first differences of a t x q matrix of data
