@@ -451,7 +451,6 @@ $(document).ready(function () {
 <a class="sourceLine" id="cb2-5" data-line-number="5">Median_Portfolio_Returns =<span class="st"> </span><span class="kw">median</span>(portfolio_Returns_<span class="dv">30</span>_m[<span class="dv">30</span>,]<span class="op">-</span><span class="dv">1</span>)</a>
 <a class="sourceLine" id="cb2-6" data-line-number="6"><span class="co"># Construct a 95% Confidential Interval for average returns</span></a>
 <a class="sourceLine" id="cb2-7" data-line-number="7">Avg_CI =<span class="st"> </span><span class="kw">quantile</span>(portfolio_Returns_<span class="dv">30</span>_m[<span class="dv">30</span>,]<span class="op">-</span><span class="dv">1</span>, <span class="kw">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>))</a></code></pre></div>
-<p>(tab content)</p>
 </div>
 <div id="matlab" class="section level3">
 <h3>Matlab</h3>
@@ -461,6 +460,10 @@ $(document).ready(function () {
 <h3>Python</h3>
 <p>(tab content)</p>
 </div>
+</div>
+<div id="results" class="section level2">
+<h2>Results</h2>
+<p>For our particular example, the portfolio returns averaged over all monte carlo trials had an average close to 0. The reason the average is close to 0 is because Apple, Facebook, and Google have average returns close to 0 over the past year. Therefore, our simulated returns essentially had no drift. Also, assuming a normal distribution of the returns would not work well in practice since stock returns are typically fat-tailed and not Normal. However, based on our Monte Carlo Study, we do not suggest investing in this portfolio based on the low expected portfolio returns.</p>
 </div>
 
 

@@ -47,7 +47,6 @@ tutorial.
 ### R
 ```{r, code = readLines("FinalProject_R.R")}
 ```
-(tab content)
 
 ### Matlab
 
@@ -56,3 +55,13 @@ tutorial.
 ### Python
 
 (tab content)
+
+## Results
+For our particular example, the portfolio returns averaged over all monte carlo
+trials had an average close to 0. The reason the average is close to 0 is 
+because Apple, Facebook, and Google have average returns close to 0 over the past year. 
+Therefore, our simulated returns essentially had no drift. Also, assuming a 
+normal distribution of the returns would not work well in practice since 
+stock returns are typically fat-tailed and not normally distributed. However, based on our 
+Monte Carlo Study, we do not suggest investing in this portfolio based on the 
+low expected portfolio returns. 
