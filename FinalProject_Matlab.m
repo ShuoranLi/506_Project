@@ -26,7 +26,7 @@ numTradingDays = 30; %
 % Load Stock Price Data
 stockData = readtable('Group21_ProjectData.csv');
 stockPrices = table2array(stockData(:, 2:end));
-
+%%
 % Calculate our Daily Returns
 stockReturns = returns(stockPrices);
 
