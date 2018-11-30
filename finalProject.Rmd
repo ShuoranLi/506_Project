@@ -12,6 +12,9 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 library(data.table)
 library(ggplot2)
+library(reticulate)
+use_python('/Users/shuoranli/Documents/PycharmProjects/Group_project_506/venv/bin/python')
+use_virtualenv('r-reticulate')
 ```
 
 ## Monte Carlo Introduction
@@ -47,6 +50,11 @@ We use adjusted-close stock prices for Apple, Google, and Facebook from November
 Finance for these companies. Also [here](https://raw.githubusercontent.com/ShuoranLi/506_Project/master/Group21_ProjectData.csv) is the link to the data set for this
 tutorial.
 
+The first ten rows of data look like :
+```{r R_version_c2, warning=FALSE, message=FALSE,echo=FALSE}
+stock_Data = fread('./Group21_ProjectData.csv')
+stock_Data[1:10, ]
+```
 ## {.tabset}
 
 ### R
@@ -54,11 +62,7 @@ Firstly, we need to load the data
 ```{r R_version_c1, warning=FALSE, message=FALSE}
 stock_Data = fread('./Group21_ProjectData.csv')
 ```
-The first ten rows look like :
-```{r R_version_c2, warning=FALSE, message=FALSE}
-stock_Data[1:10, ]
-```
-Then we extract the stock price and set initial values for Monte-Carlo parameters.
+Then we extract the stock price and set initial values for Monte-Carlo parameters
 ```{r R_version_c3, warning=FALSE, message=FALSE}
 stock_Price = as.matrix( stock_Data[ , 2:4] )
 
@@ -80,6 +84,7 @@ stock_Returns = returns(stock_Price)
 # We use today's Price 11/14/2018 to find the number of shares each stock 
 # that we buy
 portfolio_Weights = t(as.matrix(rep(1/ncol(stock_Returns), ncol(stock_Returns))))
+print(portfolio_Weights)
 ```
 Calculate the Covariance matrix and Mean value of Stock Returns
 ```{r R_version_c5, warning=FALSE, message=FALSE}
@@ -113,9 +118,11 @@ Visualising the result ( Simulated Portfolio Returns in 30 days)
 x_axis = rep(1:training_days, mc_rep)
 y_axis = as.vector(portfolio_Returns_30_m-1)
 plot_data = data.frame(x_axis, y_axis)
-ggplot(data = plot_data, aes(x = x_axis, y = y_axis)) + geom_path(aes(col = 'red'), size = 0.1) +
+ggplot(data = plot_data, aes(x = x_axis, y = y_axis)) + geom_path(col = 'red', size = 0.1) +
   xlab('Days') + ylab('Portfolio Returns') + 
-  ggtitle('Simulated Portfolio Returns in 30 days')
+  ggtitle('Simulated Portfolio Returns in 30 days')+
+  theme_bw() +
+  theme(plot.title = element_text(hjust = 0.5))
 ```
 
 Get some useful statistics through the results we get
@@ -134,8 +141,85 @@ print(Avg_CI)
 (tab content)
 
 ### Python
+Load modules
+```{r chunk1, warning=FALSE, message=FALSE, eval=FALSE}
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+```
+Load data and extract stock price 
+```{r chunk2, warning=FALSE, message=FALSE, eval=FALSE}
+stock_data = pd.read_csv("Group21_ProjectData.csv")
+stock_price = stock_data.iloc[:,1:4]
+stock_price = stock_price.values
+```
+Set Monte_Carlo parameters
+```{r chunk3, warning=FALSE, message=FALSE, eval=FALSE}
+mc_rep = 1000
+train_days = 30
+```
+Calculate stock returns
+```{r chunk4, warning=FALSE, message=FALSE, eval=FALSE}
+nrows = len(stock_price)
+stock_returns = stock_price[1:nrows,:] / stock_price[0:nrows-1,:] - 1
+```
+Set portfolio weight
+```{r chunk5, warning=FALSE, message=FALSE, eval=FALSE}
+portf_WT = np.array([1/3, 1/3, 1/3])
+```
+Calculate covariance matrix and mean of the stock returns
+```{r chunk6, warning=FALSE, message=FALSE, eval=FALSE}
+cov = np.cov(np.transpose(stock_returns))
+miu = np.mean(stock_returns, axis=0)
+Miu = np.full((train_days,3),miu)
+Miu = np.transpose(Miu)
+```
+Then we use Monte-Carlo to simulate the portfolio returns in 30 days
+```{r chunk7, warning=FALSE, message=FALSE, eval=FALSE}
+# initial matrix
+portf_returns_30_m = np.full((train_days,mc_rep),0.)
 
-(tab content)
+np.random.seed(100)
+for i in range(0,mc_rep):
+    Z = np.random.normal(size=3*train_days)
+    Z = Z.reshape((3,train_days))
+    L = np.linalg.cholesky(cov)
+    daily_returns = Miu + np.inner(L,np.transpose(Z))
+    portf_Returns_30 = np.cumprod(np.inner(portf_WT,np.transpose(daily_returns)) + 1)
+    portf_returns_30_m[:,i] = portf_Returns_30
+```
+Visualizing the result
+```{r chunk8, warning=FALSE, message=FALSE, eval=FALSE}
+plt.plot(portf_returns_30_m)
+plt.ylabel('Portfolio Returns')
+plt.xlabel('Days')
+plt.title('Simulated Portfolio Returns in 30 days')
+plt.show()
+```
+```{r pic1, echo=FALSE}
+knitr::include_graphics('./Python_pics/Portf_returns_py.png')
+```
+Finally, we want to get some useful statistics:
+```{r chunk9, warning=FALSE, message=FALSE, eval=FALSE}
+# Porfolio Returns statistics on the 30th day
+Avg_portf_returns = np.mean(portf_returns_30_m[29,:]-1)
+SD_portf_returns = np.std(portf_returns_30_m[29,:]-1)
+Median_portf_returns = np.median(portf_returns_30_m[29,:]-1)
+print(Avg_portf_returns)
+print(SD_portf_returns)
+print(Median_portf_returns)
+```
+```{r pic2, echo=FALSE,out.width='200px'}
+knitr::include_graphics('./Python_pics/avgsdmedian.png')
+```
+```{r chunk10, warning=FALSE, message=FALSE, eval=FALSE}
+# construct CI for average
+Avg_CI = np.quantile(portf_returns_30_m[29,:]-1,np.array([0.025,0.975]))
+print(Avg_CI)
+```
+```{r pic3, echo=FALSE,out.width='200px'}
+knitr::include_graphics('./Python_pics/CI.png')
+```
 
 ## Results
 For our particular example, the portfolio returns averaged over all monte carlo
@@ -146,3 +230,7 @@ normal distribution of the returns would not work well in practice since
 stock returns are typically fat-tailed and not normally distributed. However, based on our 
 Monte Carlo Study, we do not suggest investing in this portfolio based on the 
 low expected portfolio returns. 
+
+## Note
+Statistics we get using three different languages are slightly different, because in our simulation 
+process, we have generated random numbers and these numbers cannot be exactly identical.
