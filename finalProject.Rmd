@@ -4,6 +4,8 @@ author: "Feichen Shen, Israel Diego, Shuoran Li"
 date: "`r format.Date(Sys.Date(), '%B %d, %Y')`"
 output: 
   html_document:
+    toc: true
+    toc_float: true
     theme: journal
     highlight: pygments
 ---
@@ -55,7 +57,7 @@ The first ten rows of data look like :
 stock_Data = fread('./Group21_ProjectData.csv')
 stock_Data[1:10, ]
 ```
-## {.tabset}
+## Languages {.tabset}
 
 ### R
 Firstly, we need to load the data
