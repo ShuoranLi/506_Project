@@ -49,8 +49,8 @@ $$P_m = w \cdot \hat R_{30} $$.
 ## Dataset Summary
 
 We use adjusted-close stock prices for Apple, Google, and Facebook from November 14th, 2017 - November 14th, 2018. Historical stock price data can be found on Yahoo 
-Finance for these companies. Also [here](https://raw.githubusercontent.com/ShuoranLi/506_Project/master/Group21_ProjectData.csv) is the link to the data set for this
-tutorial.
+Finance for these companies. Also here is the link to the data set for this
+tutorial ['Stock Price Data'](https://raw.githubusercontent.com/ShuoranLi/506_Project/master/Group21_ProjectData.csv).
 
 The first ten rows of data look like :
 ```{r R_version_c2, warning=FALSE, message=FALSE,echo=FALSE}
@@ -305,3 +305,6 @@ low expected portfolio returns.
 ## Note
 Statistics we get using three different languages are slightly different, because in our simulation 
 process, we have generated random numbers and these numbers cannot be exactly identical.
+
+## Reference 
+*Yahoo Finance*
