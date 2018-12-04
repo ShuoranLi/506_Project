@@ -137,8 +137,77 @@ Avg_CI = quantile(portfolio_Returns_30_m[30,]-1, c(0.025, 0.975))
 print(Avg_CI)
 ```
 ### Matlab
+Load data and extract stock price 
+```{r matlab_chunk2, warning=FALSE, message=FALSE, eval=FALSE}
+stockData = readtable('Group21_ProjectData.csv');
+stockPrices = table2array(stockData(:, 2:end));
+```
+Set Monte_Carlo parameters
+```{r matlab_chunk3, warning=FALSE, message=FALSE, eval=FALSE}
+mc_rep = 1000;
+initInvestment = 100000;
+numTradingDays = 30
+```
+Calculate stock returns
+```{r matlab_chunk4, warning=FALSE, message=FALSE, eval=FALSE}
+stock_returns = stock_price(2:end, :) ./ stock_price(1:end-1, :) - 1;
+```
+Set portfolio weight
+```{r matlab_chunk5, warning=FALSE, message=FALSE, eval=FALSE}
+portfolioWeights = (1/3) * ones(1, size(stockPrices,2));
+```
+Calculate covariance matrix and mean of the stock returns
+```{r matlab_chunk6, warning=FALSE, message=FALSE, eval=FALSE}
+% Get the Variance Covariance Matrix of our Stock Returns
+coVarMat = cov(stockReturns);
 
-(tab content)
+% Average returns of each asset 
+mu = transpose(mean(stockReturns));
+mu = repmat(mu, 1, numTradingDays);
+```
+Then we use Monte-Carlo to simulate the portfolio returns in 30 days
+```{r matlab_chunk7, warning=FALSE, message=FALSE, eval=FALSE}
+for i = 1:mc_rep
+    % 'Randomly generated numbers from N(0,1) distribution'
+    Z = randn(size(stockReturns,2), numTradingDays);
+
+    % 'Lower Triangular Matrix from Choleski Factorization'
+    L = chol(coVarMat, 'lower');
+
+    % 'Calculate daily returns for 30 days'
+    dailyReturns = mu + (L * Z);
+
+    % 'Portfolio Returns'
+    thirtyDayReturn = transpose(cumprod(portfolioWeights * dailyReturns + 1));
+    
+    % 'Add return to the set of all 30-day portfolio returns'
+    portfolio30DayReturn_m(:,i) = thirtyDayReturn;
+end
+```
+Visualizing the result
+```{r matlab_chunk8, warning=FALSE, message=FALSE, eval=FALSE}
+plot(portfolio30DayReturn_m - 1, 'LineWidth', 0.5, 'Color', [0,0.7,0.9, 0.2])
+title('Simulated Portfolio Returns in 30 days', 'fontsize', 16)
+xlabel('Days','fontsize',16)
+ylabel('Portfolio Returns','fontsize',16)
+```
+```{r matlab_pic1, echo=FALSE}
+knitr::include_graphics('./matlab_pics/ThirtyDay_Returns_Matlab_MC.png')
+```
+Finally, we want to get some useful statistics:
+```{r matlab_chunk9, warning=FALSE, message=FALSE, eval=FALSE}
+% Calculate some statistics for our simulated portfolio returns
+averagePortfolioReturns = mean(portfolio30DayReturn_m(end,:) - 1);
+stdDevPortfolioReturns = std(portfolio30DayReturn_m(end,:) - 1);
+medianPortfolioReturns = median(portfolio30DayReturn_m(end,:) - 1);
+
+% Construct a 95% Confidential Interval for average returns
+
+average_CI = quantile(portfolio30DayReturn_m(end,:) - 1, [0.025, 0.975]);
+```
+```{r matlab_pic2, echo=FALSE,out.width='400px'}
+knitr::include_graphics('matlab_pics/Matlab_Simulation_Stats.png')
+```
 
 ### Python
 Load modules
