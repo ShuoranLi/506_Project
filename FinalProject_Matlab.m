@@ -26,7 +26,7 @@ numTradingDays = 30;
 % Load Stock Price Data
 stockData = readtable('Group21_ProjectData.csv');
 stockPrices = table2array(stockData(:, 2:end));
-%%
+
 % Calculate our Daily Returns
 stockReturns = returns(stockPrices);
 
@@ -87,14 +87,14 @@ fprintf('\n')
 fprintf('\n')
 display(['Mean 30-day Returns: ' num2str(averagePortfolioReturns)]);
 fprintf('\n')
-display(['Standard Deviation 30-day Returns: ' num2str(stdDevPortfolioReturns)]);
+display(['Standard Deviation 30-day Returns: ' ...
+    num2str(stdDevPortfolioReturns)]);
 fprintf('\n')
 display(['Median 30-day Returns: ' num2str(medianPortfolioReturns)]);
 fprintf('\n')
 display(['95% CI 30-day Returns: ' num2str(average_CI)]);
 fprintf('\n')
 
-diary [pwd '/matlab_pics/matlab_Output']
 % This function returns the first differences of a t x q matrix of data
 function [yDif] = returns(y)
     yDif = y(2:end, :) ./ y(1:end-1, :) - 1;
